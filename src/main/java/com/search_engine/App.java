@@ -13,7 +13,6 @@ class App {
 				"https://www.reddit.com/",
 			};
 			String[] urls = getListOfURLs(rootURLs);
-			System.out.println(urls);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -22,6 +21,7 @@ class App {
 	public static String[] getListOfURLs(String[] rootURLs) throws IOException {
 		for (String url: rootURLs) {
 			Document document = Jsoup.connect(url).get();
+			System.out.println(document.title());
 		} 
 		return rootURLs;
 	}
