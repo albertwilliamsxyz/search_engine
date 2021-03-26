@@ -3,43 +3,64 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.jsoup.Jsoup;
+import org.jsoup.HttpStatusException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 class App {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		try {
 			String[] rootURLs = {
 				"https://en.wikipedia.org/",
-				// "https://www.reddit.com/",
+				"https://www.reddit.com/",
+				"https://techterms.com/definition/recursive_function",
 			};
 			for (String rootURL: rootURLs) {
 				ArrayList<String> listOfURLs = getListOfURLs(rootURL, 1, new ArrayList<String>());
 				System.out.println("Imprimiendo respuestas");
 				for (String url: listOfURLs) {
+					System.out.println(url);
 				}
 			}
 		} catch (Exception e) {
+			System.out.println(e);
 		}
 	}
 
-	public static ArrayList<String> getListOfURLs(String url, int depth, ArrayList<String> listOfURLs) throws IOException {
-		System.out.println("----------------------------------------------------------------------------------------------------");
-		System.out.println("Entrando en getListOfURLs. url: " + url + " depth: " + depth);
-		if (depth > 0) {
+	public static Elements getHyperlinks(String url) throws IOException {
 			Document document = Jsoup.connect(url).get();
 			Elements hyperlinks = document.select("a[href]");
-			for (Element hyperlink: hyperlinks) {
-				String href = hyperlink.attr("href");
+			return hyperlinks;
+	}
+	
+	public static ArrayList<String> getUrlsFromUrl(String url) throws IOException {
+		ArrayList<String> urls = new ArrayList<String>();
+		try {
+			for (Element element: getHyperlinks(url)) {
+				String href = element.attr("href");
 				if (href.startsWith("https")) {
-					System.out.println("href: " + href);
-					ArrayList<String> response = getListOfURLs(href, depth - 1, listOfURLs);
-					listOfURLs.addAll(response);
+					urls.add(href);
 				}
 			}
+		} catch (HttpStatusException e) {
+			System.out.println(e);
 		}
-		System.out.println(listOfURLs.size());
-		return listOfURLs;
+		return urls;
+	}
+	
+	public static ArrayList<String> getListOfURLs(String url, int depth, ArrayList<String> listOfURLs) throws IOException {
+		if (depth > 0) {
+			for (Element hyperlink: getHyperlinks(url)) {
+				String href = hyperlink.attr("href");
+				if (href.startsWith("https")) {
+					listOfURLs.add(href);
+					listOfURLs.addAll(getListOfURLs(href, depth - 1, listOfURLs));
+				}
+			}
+			return listOfURLs;
+		} else {
+			return getUrlsFromUrl(url);
+		}
 	}
 }
