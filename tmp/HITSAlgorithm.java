@@ -30,3 +30,10 @@ class HITSAlgorithms {
 	}
 }
 
+class Page {
+	public static Page[] incomingNeighbors() {
+	}
+
+	public static Page[] outgoingNeighbors() {
+	}
+}
