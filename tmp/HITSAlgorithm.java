@@ -30,10 +30,17 @@ class HITSAlgorithms {
 	}
 }
 
+// TODO: Implement this Class
 class Page {
 	public static Page[] incomingNeighbors() {
 	}
 
 	public static Page[] outgoingNeighbors() {
 	}
+}
+
+class TriadManager {
+	createTable
+	insertRecord
+	selectRecords
 }

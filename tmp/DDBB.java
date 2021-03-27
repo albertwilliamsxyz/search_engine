@@ -8,15 +8,31 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * 
+ * Clase encargada de hacer la connecion con la base de datos
+ * @author ujarky
+ *
+ */
 public class DDBB {
+	
+	//Nombre de la carpeta contenedora de la base de datos
 	public static final String DDBB_FOLDER_NAME = "DDBB";
 	
+	//Nombre de la base de datos principal
 	public static final String DDBB_TRIADS_NAME = "Data";
 	
+	//Nombre de la tabla de trios
 	public static final String TRIADS_TABLE_NAME = "triads";
 
+	
+	//conexion de la base de datos
 	private Connection connection;
 	
+
+	/**
+	 * Constructor, crea la carpeta DDBB en el directorio del programa si esta no existe
+	 */
 	public DDBB(){
 		File dir = new File("DDBB");
 		if(!dir.exists()) {
@@ -26,6 +42,14 @@ public class DDBB {
 		connection = null;
 	}
 
+	
+
+	/**
+	 * Construye una URL valida para la creacion de una base de datos
+	 * @param DDBBName String nombre de la base de datos a crear
+	 * @return String con la url
+	 * @throws IOException
+	 */
 	public static String buildDatabaseURL(String DDBBName) throws IOException {
 		if(!DDBBName.endsWith(".db"))
 			DDBBName += ".db";
@@ -35,7 +59,14 @@ public class DDBB {
 		return url;
 	}
 	
+
+	/**
+	 * Crea una conexion con una base de datos
+	 * @param DDBBName nombre de la base de datos a crear
+	 * @return Boolean true si se logro hacer la conexion
+	 */
 	private boolean connection(String DDBBName){
+		
 		try {
 			connection = DriverManager.getConnection( buildDatabaseURL(DDBBName) );
 			if (connection != null) {
@@ -50,11 +81,18 @@ public class DDBB {
 		return false;
 	}
 	
+	/**
+	 * Crea una conexion con la base de datos Data
+	 * @return Boolean true si se logro hacer la conexion
+	 */
 	public boolean connection() {
 		return connection(DDBB_TRIADS_NAME);
 	}
 	
 
+	/**
+	 * Cierra la conexion con la base de datos
+	 */
 	public void close() {
 		if(connection != null) {
 			try {
@@ -66,11 +104,19 @@ public class DDBB {
 		}
 	}
 	
+	/**
+	 * verifica si la conexion ha sido cerrada
+	 * @return Boolean true si la conexion ha sido cerrada
+	 */
 	public boolean isClosed() {
 		return connection == null;
 	}
 
 	
+	/**
+	 * Crea la tabla de triplets en la base de datos
+	 * @return Boolean true si la tabla fue creada o ya existia
+	 */
 	public boolean createTriadsTable(){
 	
 		if( connection!= null )
@@ -96,6 +142,13 @@ public class DDBB {
 	}
 	
 	
+	/**
+	 * Inserta un tripet en la tabla de triplets
+	 * @param source URL source
+	 * @param destiny URL cible
+	 * @param content mot cliquable
+	 * @return
+	 */
 	public boolean insertTriad(String source, String destiny, String content) {
 		if (connection != null) {
 			try {
@@ -116,4 +169,5 @@ public class DDBB {
 		}
 		return false;
 	}
+
 }
