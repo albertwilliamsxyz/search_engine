@@ -9,11 +9,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 class WebCrawler {
-	public static void run(String[] rootURLs) throws IOException {
+	public static void run(String rootURL) throws IOException {
 		try {
-			for (String rootURL: rootURLs) {
-				getSetOfURLs(rootURL, 1);
-			}
+			getSetOfURLs(rootURL, 1);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
